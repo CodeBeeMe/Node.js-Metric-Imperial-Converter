@@ -31,8 +31,8 @@
                     <li>I can <b>GET</b> <code>/api/convert</code> with a single parameter containing an accepted number and unit and have it converted.</li>
                     <li>Hint: Split the input by looking for the index of the first character.</li>
                     <li>I can convert 'gal' to 'L' and vice versa. <b>(1 gal to 3.78541 L)</b></li>
-                    <li>I can convert 'lbs' to 'kg' and vice versa. <b>(1 lbs to 0.453592 kg)</b></li>
-                    <li>I can convert 'mi' to 'km' and vice versa. <b>(1 mi to 1.60934 km)</b></li>
+                    <li>I can convert 'lbs' to 'kg' or 'oz' to 'g' and vice versa. <b>(1 lbs to 0.453592 kg / 1 oz to 28.3495 g)</b></li>
+                    <li>I can convert 'mi' to 'km' or 'ft' to 'm' or 'in' to 'cm' and vice versa. <b>(1 mi to 1.60934 km / 1 ft to 0.3048 m / 1 in to 2.54 cm)</b></li>
                     <li>If my unit of measurement is invalid, returned will be 'invalid unit'.</li>
                     <li>If my number is invalid, returned with will 'invalid number'.</li>
                     <li>If both are invalid, return will be 'invalid number and unit'.</li>
@@ -55,13 +55,13 @@
           <div class="section">
             <h2>Example return:</h2>
             <div class="returned">              
-              <code>{initNum: 3.1, initUnit: 'mi', returnNum: 5.0000008, returnUnit: 'km', string: '3.1 miles converts to 5.00002 kilometers'}</code>
+              <code>{initNum: 3.1, initUnit: 'mi', returnNum: 4.988954, returnUnit: 'km', string: '3.1 miles converts to 4.98895 kilometers'}</code>
             </div>
           </div>
           <div class="section">
             <h2>Front-End:</h2>
             <div id="testui">              
-              <form id="convertForm" class="border">
+              <form id="convertForm" class="border" action="/api/convert" method="post">
                 <input type="text" id="convertField" 
                        name="input" placeholder="3.1mi">
                 <input id="convert" type="submit" value="CONVERT">
@@ -86,8 +86,20 @@
             url: '/api/convert',
             type: 'get',
             data: $('#convertForm').serialize(),
-            success: function(data) {
+            success: function(data) {              
               $('.output').css("display", "flex");
+              $('.output p').css("margin", "10px 0 0 0");
+              $('#result').text(data.string || data);
+              $('#jsonResult').text(JSON.stringify(data));
+            }
+          });
+          $.ajax({
+            url: '/api/convert',
+            type: 'post',
+            data: $('#convertForm').serialize(),
+            success: function(data) {              
+              $('.output').css("display", "flex");
+              $('.output p').css("margin", "10px 0 0 0");
               $('#result').text(data.string || data);
               $('#jsonResult').text(JSON.stringify(data));
             }
