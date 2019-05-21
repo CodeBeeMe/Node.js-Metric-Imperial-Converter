@@ -4,6 +4,7 @@ const express     = require('express');
 const bodyParser  = require('body-parser');
 const expect      = require('chai').expect;
 const cors        = require('cors');
+const helmet      = require('helmet');
 
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
@@ -17,6 +18,11 @@ app.use(cors({origin: '*'})); //For FCC testing purposes only
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(helmet());
+app.use(helmet.xssFilter()); //Mitigate the risk of XSS - `helmet.xssFilter()`
+app.use(helmet.noSniff()); //Avoid inferring the response MIME type - `helmet.noSniff()`
+
 
 //Index page (static HTML)
 app.route('/')
@@ -55,5 +61,3 @@ app.listen(process.env.PORT || 3000, function () {
 });
 
 module.exports = app; //for testing
-
-
